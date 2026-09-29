@@ -86,6 +86,17 @@ class UserInput(BaseModel): #now isme total 7 fields hongi.... fir hame isme tho
 
 '''Pydantic model to ban gaya
 Now we will create our predict endpoint'''
+#but isse pehle hame 2 endpoint aur chahiye i.e the home endpoint and the health_check endpoint for aws services.
+
+@app.get('/') #this one is human readable but we also want services to read it so we created the second endpoint health.
+def home():
+    return {'message', 'Insurance Premium Prediction API'}
+
+@app.get('/health') #this is machine readable... because like aws ki services i.e kubernetese etc, ye services iss end point pe hit karti hai and if unhe ye message ok milta hai then hamari api aws pe sahi se deploy hoti hai.
+def health_check():
+    return {'status', 'ok'}
+
+
 
 #Sabse pehle ham ek route create karnge i.e the predict route:
 @app.post('/predict')
