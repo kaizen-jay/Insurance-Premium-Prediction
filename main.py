@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, computed_field, field_validator
-from typing import Literal, Annotated
+
 import pickle 
 import pandas as pd
+
+from schema.user_input import UserInput
 
 #importing the ml model
 with open('model/model.pkl', 'rb') as f: #means we are opening the file in read binary mode
@@ -11,6 +12,8 @@ with open('model/model.pkl', 'rb') as f: #means we are opening the file in read 
     # iss step me hamne model import kar liya hai
 
 #Now we should also add a model version so that the aws services do know that which model we are working on 
+
+MODEL_VERSION = '1.0.0' #ye hamne abhi manually khud se banaya hai but generally ye version ek mlflow jaise software se aata hai... to mujhe ye info bhi aage ke step me apne health check me pass karunga.
 
 #now we will create a fast api app object
 
@@ -22,69 +25,7 @@ tier_2_cities = ["Jaipur", "Chandigarh", "Indore", "Lucknow", "Patna", "Ranchi",
 
 '''now we will make a pydantic model to validate the incoming data:'''
 
-#step 1: we will create a class 'UserInput' jo ki BaseModel se inherit karegi.:
-class UserInput(BaseModel): #now isme total 7 fields hongi.... fir hame isme thode discription and validation add karne hai jo ki ham typing modele ke annotated se karenge 
-    age: Annotated[int, Field(..., gt=0, lt=120, description= 'Age of the user')] #this will be an integer... and field function ko call karke ham required (...) kar denge for the input... and fir validation add kar denge of gt=0, lt=120... then we can also add description just like i did.
-    weight:Annotated[float, Field(..., gt=0, description= 'Weight of the user')]
-    height:Annotated[float, Field(..., gt=0, lt=2.5, description= 'Height of the user')]
-    income_lpa:Annotated[float, Field(..., gt=0, description= 'Annual Salary of the user in lpa')]
-    smoker:Annotated[bool, Field(..., description= 'Is user a smoker')]
-    city:Annotated[str, Field(..., description= 'Residing City of the user')]
-    occupation:Annotated[Literal['retired', 'freelancer', 'student', 'government_job', 'business_owner', 'unemployed', 'private_job'], Field(..., description= 'Occupation of the user')] #Literal is used when we want to add options to choose from
 
-    @field_validator('city') #field validators are used to maintain consistency. ab maan lo kisi ne small letter se city ka naam likh diya to ham use khud se capitalize karke push kar sakte hai
-    @classmethod
-    def normalize_city(cls, v:str) -> str:
-        v = v.strip().title()
-        return v
-    #means hame jaise hi city mil raha hai hamare client se ham use strip kar rahe hai (means city ke pehle ya baad me koi white space hai to ham use hata rahe hai uske baad city ka jo naam aa rha hai use title case me convert kar rahe hai and then use return kar de rahe hai)
-
-    #now mujhe above features se new features banane hai i.e for eg. height and weight se mujhe bmi banana hai to mai use karunga computed fields ka just like:
-    @computed_field
-    @property
-    #now we will create a new function by the name of bmi:
-    def bmi(self) -> float: #isme hame ek self object mil raha hai and jo palat ke mil raha hai i.e a float, and ye function mujhe return kar raha hai:
-        return self.weight/(self.height**2)
-    #Ye ban gayi hamari first computed field.
-
-    #now we will create another computed field by the name lifestyle risk:
-    @computed_field
-    @property
-    def lifestyle_risk(self) -> str:
-        if self.smoker and self.bmi > 30:
-            return "high"
-        elif self.smoker or self.bmi > 27:
-            return "medium"
-        else:
-            return "low"
-    #Ye ban gayi hamari lifestyle risk computed field
-
-    #Now we will create another computed field by the name age group:
-    @computed_field
-    @property
-    def age_group(self) -> str:
-        if self.age <25:
-            return "young"
-        elif self.age < 45:
-            return "adult"
-        elif self.age < 60:
-            return "middle_aged"
-        else:
-            return "senior"
-    #ye ban gayi hamari age group ki computed field.
-
-    #Now we will create another computed field named city tier:
-    @computed_field
-    @property
-    def city_tier(self) -> int:
-        if self.city in 'tier_1_cities':
-            return 1
-        elif self.city in tier_2_cities:
-            return 2
-        else:
-            return 3
-
-    #Computed fields can be said as features that we add, and this as a whole is called feature engineering.
 
 '''Pydantic model to ban gaya
 Now we will create our predict endpoint'''
@@ -92,11 +33,11 @@ Now we will create our predict endpoint'''
 
 @app.get('/') #this one is human readable but we also want services to read it so we created the second endpoint health.
 def home():
-    return {'message', 'Insurance Premium Prediction API'}
+    return {'message': 'Insurance Premium Prediction API'}
 
 @app.get('/health') #this is machine readable... because like aws ki services i.e kubernetese etc, ye services iss end point pe hit karti hai and if unhe ye message ok milta hai then hamari api aws pe sahi se deploy hoti hai.
 def health_check():
-    return {'status', 'ok'}
+    return {'status': 'ok', 'version': MODEL_VERSION, 'model_loaded': model is True}
 
 
 
