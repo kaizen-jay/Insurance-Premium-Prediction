@@ -10,6 +10,8 @@ with open('model/model.pkl', 'rb') as f: #means we are opening the file in read 
     model = pickle.load(f)
     # iss step me hamne model import kar liya hai
 
+#Now we should also add a model version so that the aws services do know that which model we are working on 
+
 #now we will create a fast api app object
 
 app = FastAPI()
