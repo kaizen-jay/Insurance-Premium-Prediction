@@ -6,6 +6,8 @@ import pandas as pd
 
 from schema.user_input import UserInput
 
+from config.city_tier import tier_1_cities, tier_2_cities
+
 #importing the ml model
 with open('model/model.pkl', 'rb') as f: #means we are opening the file in read binary mode
     model = pickle.load(f)
@@ -19,8 +21,7 @@ MODEL_VERSION = '1.0.0' #ye hamne abhi manually khud se banaya hai but generally
 
 app = FastAPI()
 
-tier_1_cities = ["Mumbai", "Delhi", "Banglore", "Chennai", "Kolkata", "Hyderabad", "Pune"]
-tier_2_cities = ["Jaipur", "Chandigarh", "Indore", "Lucknow", "Patna", "Ranchi", "Visakhapatnam", "Coimbatore", "Bhopal", "Nagpur", "Vadodra", "Surat", "Rajkot", "Jodhpur", "Raipur", "Amritsar", "Varanasi", "Agra", "Dehradun", "Mysore", "Jabalpur", "Guwahati", "Thiruvananthapuram", "Ludhiana", "Nashik", "Allahabad", "Udaipur", "Aurangabad", "Hubli", "Belgaum", "Salem", "Vijaywada", "Tiruchirappalli", "Bhavnagar", "Gwalior", "Dhanbad", "Bareilly", "Aligarh", "Gaya", "Kozhikode", "Warangal", "Kolhapur", "Bilaspur", "Jalandhar", "Noida", "Guntur", "Asansol", "Siliguri"]
+
 
 
 '''now we will make a pydantic model to validate the incoming data:'''
