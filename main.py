@@ -8,14 +8,9 @@ from schema.user_input import UserInput
 
 from config.city_tier import tier_1_cities, tier_2_cities
 
-#importing the ml model
-with open('model/model.pkl', 'rb') as f: #means we are opening the file in read binary mode
-    model = pickle.load(f)
-    # iss step me hamne model import kar liya hai
+from model.predict import predict_output,model, MODEL_VERSION
 
-#Now we should also add a model version so that the aws services do know that which model we are working on 
 
-MODEL_VERSION = '1.0.0' #ye hamne abhi manually khud se banaya hai but generally ye version ek mlflow jaise software se aata hai... to mujhe ye info bhi aage ke step me apne health check me pass karunga.
 
 #now we will create a fast api app object
 
@@ -49,19 +44,19 @@ def predict_premium(data: UserInput): #yaha pe ek function create kiya by the na
 
     '''now that hamara model load ho chuka hai, ab hame ek proper input format create karna hai... aur hame ek row ka data pass karna hai hamarae model me... aur ye input pandas dataframe ke format me bheja jayega kyuki jo ML model hai jo rando forest model hai vo panda dataframe object ke oopar train hua hai  '''
 
-    input_df = pd.DataFrame([{
+    user_input = {
         'bmi': data.bmi,
         'age_group': data.age_group,
         'lifestyle_risk': data.lifestyle_risk,
         'city_tier': data.city_tier,
         'income_lpa': data.income_lpa,
         'occupation': data.occupation
-    }]) #now we will create a panda dataframe jisme ki ham bas ek row rakhenge and usme ham ek dictionary pass karenge... in sakbo ek variable me store kar lenge by the name input_df.
+    } #now we will create a panda dataframe jisme ki ham bas ek row rakhenge and usme ham ek dictionary pass karenge... in sakbo ek variable me store kar lenge by the name input_df.
     #ye ban gaya hamara input jo ham apne ml model ke paas bhejenge.
 
     #ab hame predicton karna hai toh:
 
-    prediction = model.predict(input_df)[0]#oopar hamne jo model import kiya hai uske predict function ko call karenge...fir usme ham pass kar denge 'input_df'... fir isse palat ke hame list me ek output milega... aur hame uss list ka 0th item chahiye hoga... aur yahi hoga hamara 'prediction'... aur isi prediction ko hame json ke format me return karna hai... for this we will use fastapi.responses se jsonresponse
+    prediction = predict_output(user_input) #oopar hamne jo model import kiya hai uske predict function ko call karenge...fir usme ham pass kar denge 'input_df'... fir isse palat ke hame list me ek output milega... aur hame uss list ka 0th item chahiye hoga... aur yahi hoga hamara 'prediction'... aur isi prediction ko hame json ke format me return karna hai... for this we will use fastapi.responses se jsonresponse
 
     return JSONResponse(status_code= 200, content={'predicted_category': prediction})
 
