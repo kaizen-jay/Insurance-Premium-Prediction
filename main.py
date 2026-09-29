@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, field_validator
 from typing import Literal, Annotated
 import pickle 
 import pandas as pd
@@ -29,6 +29,13 @@ class UserInput(BaseModel): #now isme total 7 fields hongi.... fir hame isme tho
     smoker:Annotated[bool, Field(..., description= 'Is user a smoker')]
     city:Annotated[str, Field(..., description= 'Residing City of the user')]
     occupation:Annotated[Literal['retired', 'freelancer', 'student', 'government_job', 'business_owner', 'unemployed', 'private_job'], Field(..., description= 'Occupation of the user')] #Literal is used when we want to add options to choose from
+
+    @field_validator('city') #field validators are used to maintain consistency. ab maan lo kisi ne small letter se city ka naam likh diya to ham use khud se capitalize karke push kar sakte hai
+    @classmethod
+    def normalize_city(cls, v:str) -> str:
+        v = v.strip().title()
+        return v
+    #means hame jaise hi city mil raha hai hamare client se ham use strip kar rahe hai (means city ke pehle ya baad me koi white space hai to ham use hata rahe hai uske baad city ka jo naam aa rha hai use title case me convert kar rahe hai and then use return kar de rahe hai)
 
     #now mujhe above features se new features banane hai i.e for eg. height and weight se mujhe bmi banana hai to mai use karunga computed fields ka just like:
     @computed_field
