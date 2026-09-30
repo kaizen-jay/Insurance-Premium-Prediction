@@ -24,10 +24,10 @@ def predict_output(user_input: dict): #means predict_output ko apna kaam karne k
 
     #get probabilities for all classes 
     probabilities = model.predict_proba(df)[0]
-    confidence = max(probabilities) 
+    confidence = max(probabilities) #here we are getting probabilities against all the three classes i.e high, low or medium...
 
     #create mapping: {class_name: probability}
-    class_probs = dict(zip(class_labels, map(lambda p: round(p, 4), probabilities)))
+    class_probs = dict(zip(class_labels, map(lambda p: round(p, 4), probabilities))) #aur fir in probabs ko ham proper dictionary me convert kar rahe hai...
 
     return{
         "predicted_category": predicted_class,
