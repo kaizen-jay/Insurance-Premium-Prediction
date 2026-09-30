@@ -57,7 +57,7 @@ def predict_premium(data: UserInput): #yaha pe ek function create kiya by the na
     #ab hame predicton karna hai toh:
 
     prediction = predict_output(user_input) #oopar hamne jo model import kiya hai uske predict function ko call karenge...fir usme ham pass kar denge 'input_df'... fir isse palat ke hame list me ek output milega... aur hame uss list ka 0th item chahiye hoga... aur yahi hoga hamara 'prediction'... aur isi prediction ko hame json ke format me return karna hai... for this we will use fastapi.responses se jsonresponse
-
+    '''try catch scenario''' # Ye jo prediction hai ye ek external file (predict.py) ki working pe depend kar raha hai Toh kabhi bhi aise scenario me hame try catch / try accept (in python) me likhna chahiye 
     return JSONResponse(status_code= 200, content={'predicted_category': prediction})
 
 '''THAT'S IT, THIS IS OUR ML MODEL '''
