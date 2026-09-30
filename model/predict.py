@@ -11,7 +11,7 @@ with open('model/model.pkl', 'rb') as f: #means we are opening the file in read 
 MODEL_VERSION = '1.0.0' #ye hamne abhi manually khud se banaya hai but generally ye version ek mlflow jaise software se aata hai... to mujhe ye info bhi aage ke step me apne health check me pass karunga.
 
 #Get class labels from model (imp for matching probabilities to class names)
-class_labels = model.classes_.tolist()
+class_labels = model.classes_.tolist() #hamne oopar jo model load kiya hai iss model se saari output classes ka naam nikal rahe hai. Hamari output classes hai high, medium and low.. vo hamne class_labels me store kar liya hai.
 
 #now ham ek naya function banayenge by the name predict_output
 
