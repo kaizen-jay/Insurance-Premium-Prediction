@@ -20,11 +20,11 @@ def predict_output(user_input: dict): #means predict_output ko apna kaam karne k
     df = pd.DataFrame([user_input]) #iss dataframe ko hamne ek variable me store kar liya.. aur hamne user input ko as a list diya hai kyuki daraframe input ko as a row lera hai.
 
     #predict the class
-    predicted_class = model.predict(df)[0]
+    predicted_class = model.predict(df)[0] #yaha pe high, low or medium ans me milega.
 
     #get probabilities for all classes 
     probabilities = model.predict_proba(df)[0]
-    confidence = max(probabilities)
+    confidence = max(probabilities) 
 
     #create mapping: {class_name: probability}
     class_probs = dict(zip(class_labels, map(lambda p: round(p, 4), probabilities)))
