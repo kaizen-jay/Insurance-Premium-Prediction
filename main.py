@@ -67,3 +67,4 @@ def predict_premium(data: UserInput): #yaha pe ek function create kiya by the na
         return JSONResponse(status_code=500, content=str(e))
 
 '''THAT'S IT, THIS IS OUR ML MODEL'''
+'''THIS IS SOME CRAZY MING OF OPENING THE MAC AND EDITING ANYTHING JUST FOR THE SAKE OF SOME GREEN DOTS 😭"
