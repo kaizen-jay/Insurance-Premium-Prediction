@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import pickle 
 import pandas as pd
-
 from schema.user_input import UserInput
 
 from config.city_tier import tier_1_cities, tier_2_cities
