@@ -4,7 +4,6 @@ import pickle
 import pandas as pd
 from schema.user_input import UserInput
 from config.city_tier import tier_1_cities, tier_2_cities
-
 from model.predict import predict_output,model, MODEL_VERSION
 
 
