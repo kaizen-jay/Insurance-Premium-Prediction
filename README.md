@@ -12,3 +12,5 @@
 6. Try Catch
 7. Add confidence score
 8. Response Model
+
+FastAPI me hamesha ham input data ko pydantic ke through validate kar sakte hai but FastAPI hame ye bhi function deta hai ki jo output me data mil raha hai ham use bhi validate kar sakte hai
