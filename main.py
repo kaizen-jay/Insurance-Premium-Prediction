@@ -66,4 +66,4 @@ def predict_premium(data: UserInput): #yaha pe ek function create kiya by the na
     except Exception as e: #--- ham use gracefully handle kar payenge iss tarah se.
         return JSONResponse(status_code=500, content=str(e))
 
-'''THAT'S IT, THIS IS OUR ML MODEL '''
+'''THAT'S IT, THIS IS OUR ML MODEL'''
